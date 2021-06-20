@@ -4,7 +4,6 @@
  * @param {...string} fields - the properties paths to pick
  * @returns {object} - returns the new object
  */
-
 export const pick = (obj, ...fields) => {
   const resultObj = Object.fromEntries( 
     Object.entries(obj)

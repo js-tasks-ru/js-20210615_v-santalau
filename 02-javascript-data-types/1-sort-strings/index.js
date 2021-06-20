@@ -4,7 +4,6 @@
  * @param {string} [param="asc"] param - the sorting type "asc" or "desc"
  * @returns {string[]}
  */
-
 export function sortStrings(arr, param = 'asc') {
   const resultArr = arr
   .map(str => str.normalize()) // for correct compare ã === ã
