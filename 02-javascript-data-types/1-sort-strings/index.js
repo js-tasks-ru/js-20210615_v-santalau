@@ -7,7 +7,7 @@
 
 export function sortStrings(arr, param = 'asc') {
   const resultArr = arr
-  .map(str => str.normalize()) // for correct compare a === ã
+  .map(str => str.normalize()) // for correct compare ã === ã
   .sort((strA, strB) => {
     return strA.localeCompare(strB, ['ru', 'en'], {caseFirst: "upper"});
   }); 
