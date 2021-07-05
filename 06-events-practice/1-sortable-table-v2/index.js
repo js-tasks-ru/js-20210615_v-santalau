@@ -1,5 +1,29 @@
 /* eslint-disable curly */
 export default class SortableTable {
+  
+  handlerEvent = {
+    pointerdownFieldHeader: event => {
+      const target = event.target.closest('div[data-sortable]');
+      if (!target) return; 
+  
+      const field = target.dataset.id;  
+        
+      if (this.sorted.id !== field) {
+        const cell = this.subElements.header.querySelector(`[data-id=${this.sorted.id}]`);
+        cell.removeAttribute('data-order');
+        this.sorted.id = field;
+      }
+      if (target.dataset.order === "asc") {
+        target.dataset.order = "desc";
+      } else {
+        target.dataset.order = "asc";
+      }
+
+      const order = target.dataset.order;
+      this.sort(field, order);
+    },
+  }
+
   constructor(
     headersConfig, 
     {
@@ -108,35 +132,10 @@ export default class SortableTable {
   initListener() {
     this.subElements.header.addEventListener(
       'pointerdown', 
-      this.getHandlerEvent('pointerdown')
+      this.handlerEvent.pointerdownFieldHeader,
     ); 
   }
-  getHandlerEvent(typeEvent) {
-    const handlers = {
-      'pointerdown': event => {
-        const target = event.target.closest('div[data-sortable]');
-        if (!target) return; 
   
-        const field = target.dataset.id;  
-        
-        if (this.sorted.id !== field) {
-          const cell = this.subElements.header.querySelector(`[data-id=${this.sorted.id}]`);
-          cell.removeAttribute('data-order');
-          this.sorted.id = field;
-        }
-        if (target.dataset.order === "asc") {
-          target.dataset.order = "desc";
-        } else {
-          target.dataset.order = "asc";
-        }
-
-        const order = target.dataset.order;
-        this.sort(field, order);
-      }
-    };
-    return handlers[typeEvent];
-  }
-
   sort(field, order) {
     const arr = [...this.data];
     const { sortType } = this.config.find(item => item.id === field);
@@ -176,7 +175,7 @@ export default class SortableTable {
     this.element = null;
     this.subElements.header.removeEventListener(
       'pointerdown', 
-      this.getHandlerEvent('pointerdown')
+      this.handlerEvent.pointerdownFieldHeader
     ); 
   }
 }

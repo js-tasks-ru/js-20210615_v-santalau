@@ -1,6 +1,27 @@
 /* eslint-disable curly */
 class Tooltip {
   static instance;  
+
+  handlerEvent = {
+    pointerover: event => {
+      const tooltip = event.target.dataset.tooltip;
+      if (tooltip) {
+        this.render(tooltip);
+        document.addEventListener('pointermove', this.handlerEvent.pointermove);
+        document.addEventListener('pointerout', this.handlerEvent.pointerout);  
+      }
+    },
+    pointermove: event => {
+      const offset = 5;
+      this.element.style.left = `${event.clientX + offset}px`;
+      this.element.style.top = `${event.clientY + offset}px`;
+    },
+    pointerout: () => {
+      this.remove();
+      document.removeEventListener('pointermove', this.handlerEvent.pointermove);
+      document.removeEventListener('pointerout', this.handlerEvent.pointerout);
+    },   
+  }
   
   constructor() {
     if (Tooltip.instance) return Tooltip.instance;
@@ -21,32 +42,8 @@ class Tooltip {
     document.body.append(this.element);
   }
 
-  getHandler(typeEvent) {
-    const handlers = {
-      'pointerover': event => {
-        const tooltip = event.target.dataset.tooltip;
-        if (tooltip) {
-          this.render(tooltip);
-          document.addEventListener('pointermove', this.getHandler('pointermove'));
-          document.addEventListener('pointerout', this.getHandler('pointerout'));  
-        }
-      },
-      'pointermove': event => {
-        this.element.style.left = `${event.clientX + 5}px`;
-        this.element.style.top = `${event.clientY + 5}px`;
-      },
-      'pointerout': () => {
-        this.remove();
-        document.removeEventListener('pointermove', this.getHandler('pointermove'));
-        document.removeEventListener('pointerout', this.getHandler('pointerout'));
-      },
-    };
-
-    return handlers[typeEvent];
-  }
-
   initialize() {
-    document.addEventListener('pointerover', this.getHandler('pointerover'));
+    document.addEventListener('pointerover', this.handlerEvent.pointerover);
   }
 
   remove() {
@@ -56,7 +53,7 @@ class Tooltip {
   destroy() {
     this.remove();
     this.element = null;
-    document.removeEventListener('pointerover', this.getHandler('pointerover'));
+    document.removeEventListener('pointerover', this.handlerEvent.pointerover);
   }
 }
 
