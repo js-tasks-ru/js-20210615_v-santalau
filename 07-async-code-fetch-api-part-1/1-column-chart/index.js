@@ -104,7 +104,7 @@ export default class ColumnChart {
     const renderData = Object.values(data);
     
     const { header, body } = this.subElements;
-    body.innerHTML = await this.getColumns(renderData);
+    body.innerHTML = this.getColumns(renderData);
     header.textContent = this.formatHeading(
       this.getValue(renderData)
     );  
