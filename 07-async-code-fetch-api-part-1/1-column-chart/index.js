@@ -4,6 +4,8 @@ import fetchJson from './utils/fetch-json.js';
 const BACKEND_URL = 'https://course-js.javascript.ru';
 
 export default class ColumnChart {
+  element;
+  subElements = {};
   chartHeight = 50;
 
   constructor({
@@ -14,15 +16,13 @@ export default class ColumnChart {
     },
     label = '',
     link = '',
-    value = 0,
     formatHeading = data => data,
   } = {}) {
     
-    this.path = url;
+    this.url = new URL(url, BACKEND_URL);
     this.range = range;
     this.label = label;
     this.link = link;
-    this.value = value;
     this.formatHeading = formatHeading;
     
     this.render();
@@ -30,10 +30,9 @@ export default class ColumnChart {
   }
 
   getUrl(from, to) {
-    const url = new URL(this.path, BACKEND_URL);
-    url.searchParams.set('from', from.toISOString());
-    url.searchParams.set('to', to.toISOString());
-    return url;
+    this.url.searchParams.set('from', from.toISOString());
+    this.url.searchParams.set('to', to.toISOString());
+    return this.url;
   }
 
   async getData(from, to) {
@@ -110,6 +109,9 @@ export default class ColumnChart {
     );  
     
     this.element.classList.remove('column-chart_loading');
+    
+    this.range.from = from;
+    this.range.to = to;
 
     return data;
   }
